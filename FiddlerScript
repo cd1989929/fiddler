@@ -75,6 +75,39 @@ class Handlers
         Utilities.LaunchHyperlink(sAction);
     }
     */
+        
+            
+    function BeginRequestTime(oS: Session)
+    {
+        if (oS.Timers != null)
+        {
+            return oS.Timers.ClientBeginRequest.ToString(); 
+        }
+        return String.Empty;
+    }
+        
+    public static BindUIColumn("Time Taken")
+    function CalcTimingCol(oS: Session){
+        var sResult = String.Empty;
+        if ((oS.Timers.ServerDoneResponse > oS.Timers.ClientDoneRequest))
+        {
+            sResult = (oS.Timers.ServerDoneResponse - oS.Timers.ClientDoneRequest).ToString();
+        }
+        return sResult;
+    }
+        
+    
+    public static BindUIColumn("Time Request")
+    function CalcTimingRequestCol(oS: Session){
+        var sResult = String.Empty;
+        sResult = (oS.Timers.ClientDoneRequest).ToString();
+        return sResult;
+    }
+        
+    public static BindUIColumn("clentIP")
+    function CalcClentIPCol(oS: Session){
+        return oS["x-clientIP"];
+    }    
 
     public static RulesOption("Hide 304s")
     BindPref("fiddlerscript.rules.Hide304s")
@@ -149,6 +182,12 @@ class Handlers
     }
 
     static function OnBeforeRequest(oSession: Session) {
+        if(oSession.oRequest.headers.Exists("Assign-Proxy")){
+            oSession["X-OverrideGateway"] = oSession.oRequest.headers("Assign-Proxy");
+            oSession.oRequest.headers.Remove("Assign-Proxy");
+        }
+        FiddlerApplication.Log.LogFormat("Session-001 {0}:{1}", oSession.id,oSession["X-OverrideGateway"]);
+        
         // Sample Rule: Color ASPX requests in RED
         // if (oSession.uriContains(".aspx")) {	oSession["ui-color"] = "red";	}
 
