@@ -185,8 +185,51 @@ class Handlers
         if(oSession.oRequest.headers.Exists("Assign-Proxy")){
             oSession["X-OverrideGateway"] = oSession.oRequest.headers("Assign-Proxy");
             oSession.oRequest.headers.Remove("Assign-Proxy");
+            FiddlerApplication.Log.LogFormat("Session-001 {0}:{1}", oSession.id,oSession["X-OverrideGateway"]);
         }
-        FiddlerApplication.Log.LogFormat("Session-001 {0}:{1}", oSession.id,oSession["X-OverrideGateway"]);
+        
+        
+        if(oSession.oRequest['Cookie']){
+            //oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ADRUM=.*?;","");
+            //oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"mmapi.*?;","");
+            /*
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"FunnelJourney=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ejSessionExpiry=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"eJRebookingSession.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"RBK-XSRF=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ejCorrelation=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ej20RecentSearches=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ej20SearchCookie=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"idb\\*=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"FunnelQuery=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ADRUM=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"RBKPOD=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"CMSPOD=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_cc=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"odb\\*=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"sc.Status.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"sc.ASP.NET_SESSIONID.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"cookies.js=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"lang2012=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_ga=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_gid=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"ejCC_3=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"WPPOD=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"labi=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_gcl_au=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_fbp=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_cs_ex=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_cs_c=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"__qca=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"akacd_TrueClarity_SC=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"47620=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"akacd_DA2MB_PR=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"_gat=.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"website#lang.*?;","");
+            oSession.oRequest['Cookie'] = Regex.Replace(oSession.oRequest['Cookie'],"mmapi.*?;","");
+            */
+                
+        }
         
         // Sample Rule: Color ASPX requests in RED
         // if (oSession.uriContains(".aspx")) {	oSession["ui-color"] = "red";	}
@@ -309,7 +352,13 @@ class Handlers
             oSession["ui-hide"] = "true";
         }
         
-        
+        if(oSession.oResponse['Set-Cookie']){
+            FiddlerApplication.Log.LogFormat("OnBeforeResponse-002 {0}:{1}", oSession.id,oSession.ResponseHeaders);
+            if(oSession.ResponseHeaders.ToString().IndexOf("~0~")>0){
+                oSession.ResponseHeaders.Remove("Set-Cookie");
+                
+            }
+        }
         
         
         
